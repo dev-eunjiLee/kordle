@@ -1,4 +1,7 @@
 import { Module } from '@nestjs/common';
+import { KwordleController } from './kwordle.controller';
 
-@Module({})
+@Module({
+  controllers: [KwordleController],
+})
 export class KwordleModule {}
