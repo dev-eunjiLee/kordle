@@ -1,17 +1,16 @@
 import { Controller, Get, Param } from '@nestjs/common';
-import { IsString } from 'class-validator';
-
-export class InsertedKeywordValidation {
-  // TODO 숫자 string은 제외하도록
-  // TODO validation 클래스 파일 분리
-  @IsString()
-  keyword: string;
-}
+import { ValidationPipeForInsertedKeyword } from './validations/IsStringNotNumber';
 
 @Controller('kwordle')
 export class KwordleController {
-  @Get('insert/:keyword')
-  insert(@Param() params: InsertedKeywordValidation) {
-    console.log(params);
+  @Get('/:keyword')
+  insert(
+    @Param(
+      'keyword',
+      new ValidationPipeForInsertedKeyword({ standardLength: 5 }),
+    )
+    keyword: string,
+  ) {
+    console.log(keyword);
   }
 }
