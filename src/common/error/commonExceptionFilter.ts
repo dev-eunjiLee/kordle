@@ -12,10 +12,12 @@ export class CommonExceptionFilter implements ExceptionFilter {
 
     response.json({
       timestamp: new Date().toISOString(),
-      path: request.route.path,
+      path: request.route?.path,
       message: exception.message,
-      params: request.params,
       stack: `${exception.stack.slice(0, 50)}...`,
+      ...(request.method === 'GET'
+        ? { params: request.params }
+        : { body: request.body }),
     });
   }
 }
