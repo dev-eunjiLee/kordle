@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { KwordleService } from './kwordle.service';
 import { ValidationPipeForInsertedKeyword } from './validations/validationPipeForinsertedKeyword';
 
@@ -12,13 +12,13 @@ export class KwordleController {
   }
 
   @Post('/:keyword')
-  insert(
-    @Param(
+  answer(
+    @Body(
       'keyword',
       new ValidationPipeForInsertedKeyword({ standardLength: 5 }),
     )
     keyword: string,
   ) {
-    console.log(keyword);
+    return this.kwordleService.answer(keyword);
   }
 }
