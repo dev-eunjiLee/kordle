@@ -10,12 +10,12 @@ export class ValidationPipeForInsertedKeyword<T> implements PipeTransform<T> {
   transform(value: T) {
     // NotNumberString인지 확인
     if (this.checkNotNumberString(String(value))) {
-      throw Error('value must be a string, not number');
+      throw Error('keyword must be a string, not number');
     }
 
     // 길이 체크
     if (this.checkLength(String(value))) {
-      throw Error(`value length must be a ${this.KEYWORD_LENGTH}`);
+      throw Error(`keyword length must be a ${this.KEYWORD_LENGTH}`);
     }
 
     return value;
