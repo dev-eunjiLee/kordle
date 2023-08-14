@@ -1,4 +1,4 @@
-import { ArgumentMetadata, PipeTransform } from '@nestjs/common';
+import { PipeTransform } from '@nestjs/common';
 
 export class ValidationPipeForInsertedKeyword<T> implements PipeTransform<T> {
   private readonly KEYWORD_LENGTH: number;
@@ -7,12 +7,7 @@ export class ValidationPipeForInsertedKeyword<T> implements PipeTransform<T> {
     this.KEYWORD_LENGTH = option.standardLength;
   }
 
-  transform(value: T, metadata: ArgumentMetadata) {
-    console.log(value);
-    console.log(metadata);
-
-    console.log(isNaN(Number(value)));
-
+  transform(value: T) {
     // NotNumberString인지 확인
     if (this.checkNotNumberString(String(value))) {
       throw Error('value must be a string, not number');
