@@ -1,9 +1,17 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Post } from '@nestjs/common';
+import { KwordleService } from './kwordle.service';
 import { ValidationPipeForInsertedKeyword } from './validations/validationPipeForinsertedKeyword';
 
 @Controller('kwordle')
 export class KwordleController {
-  @Get('/:keyword')
+  constructor(private readonly kwordleService: KwordleService) {}
+
+  @Get()
+  get() {
+    return this.kwordleService.getKeyword();
+  }
+
+  @Post('/:keyword')
   insert(
     @Param(
       'keyword',
