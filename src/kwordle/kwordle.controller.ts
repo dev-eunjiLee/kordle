@@ -1,5 +1,5 @@
 import { Controller, Get, Param } from '@nestjs/common';
-import { ValidationPipeForInsertedKeyword } from './validations/IsStringNotNumber';
+import { ValidationPipeForInsertedKeyword } from './validations/isStringNotNumber';
 
 @Controller('kwordle')
 export class KwordleController {
