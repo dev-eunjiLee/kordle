@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { KwordleService } from './kwordle.service';
 import { ValidationPipeForInsertedKeyword } from './validations/validationPipeForinsertedKeyword';
 
@@ -11,14 +11,18 @@ export class KwordleController {
     return this.kwordleService.getKeyword();
   }
 
-  @Post('/:keyword')
+  @Post('/answer')
   answer(
     @Body(
-      'keyword',
+      'userRequest',
       new ValidationPipeForInsertedKeyword({ standardLength: 5 }),
     )
-    keyword: string[],
+    @Body()
+    body: any,
+    // body: KAKAO_SKILL_PAYLOAD,
   ): Array<Array<string>> {
-    return this.kwordleService.answer(keyword);
+    console.log(body);
+    return [['a'], ['b']];
+    // return this.kwordleService.answer(keyword);
   }
 }

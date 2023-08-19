@@ -1,14 +1,17 @@
 import { PipeTransform } from '@nestjs/common';
 import HANGUL from 'src/common/hangul';
+import { KAKAO_SKILL_PAYLOAD_ACTION } from 'src/common/kakao';
 
-export class ValidationPipeForInsertedKeyword<T> implements PipeTransform<T> {
+export class ValidationPipeForInsertedKeyword implements PipeTransform {
   private readonly KEYWORD_LENGTH: number;
 
   constructor(option: { standardLength: number }) {
     this.KEYWORD_LENGTH = option.standardLength;
   }
 
-  transform(value: T) {
+  transform(keyword: KAKAO_SKILL_PAYLOAD_ACTION) {
+    const value = keyword.params.keyword;
+
     // NotNumberString인지 확인
     if (this.checkNotNumberString(String(value))) {
       throw Error('keyword must be a string, not number');
