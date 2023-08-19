@@ -11,9 +11,7 @@ export class HangulService {
     private readonly hangulStartCharCode: number,
     @Inject(HANGUL_END_CHARCODE_TOKEN)
     private readonly hangulEndCharCode: number,
-  ) {
-    console.log(this.isHangul('가123'));
-  }
+  ) {}
 
   isHangul(word: string): boolean {
     let isHangul = true;
