@@ -1,4 +1,5 @@
 import { PipeTransform } from '@nestjs/common';
+import HANGUL from 'src/common/hangul';
 
 export class ValidationPipeForInsertedKeyword<T> implements PipeTransform<T> {
   private readonly KEYWORD_LENGTH: number;
@@ -16,6 +17,10 @@ export class ValidationPipeForInsertedKeyword<T> implements PipeTransform<T> {
     // 길이 체크
     if (this.checkLength(String(value))) {
       throw Error(`keyword length must be a ${this.KEYWORD_LENGTH}`);
+    }
+
+    if (!HANGUL.isHangul(String(value))) {
+      throw Error(`characters in keyword must be a HANGUL`);
     }
 
     return value;
