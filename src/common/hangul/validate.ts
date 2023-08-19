@@ -1,8 +1,4 @@
-/**
- * const
- */
-const HANGUL_START_CHARCODE_TOKEN = '가'.charCodeAt(0);
-const HANGUL_END_CHARCODE_TOKEN = '힣'.charCodeAt(0);
+import { HANGUL_END_CHARCODE, HANGUL_START_CHARCODE } from './common';
 
 /**
  * type
@@ -33,8 +29,7 @@ const isHangul: HANGUL_FUNCTTION = (word: string) => {
  */
 const _perIsHangul: HANGUL_FUNCTTION = (char: string) => {
   const charCode = char.charCodeAt(0);
-  return (
-    HANGUL_START_CHARCODE_TOKEN <= charCode &&
-    charCode <= HANGUL_END_CHARCODE_TOKEN
-  );
+  return HANGUL_START_CHARCODE <= charCode && charCode <= HANGUL_END_CHARCODE;
 };
+
+export { isHangul };

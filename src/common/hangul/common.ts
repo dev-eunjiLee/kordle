@@ -1,0 +1,4 @@
+const HANGUL_START_CHARCODE = '가'.charCodeAt(0);
+const HANGUL_END_CHARCODE = '힣'.charCodeAt(0);
+
+export { HANGUL_START_CHARCODE, HANGUL_END_CHARCODE };
