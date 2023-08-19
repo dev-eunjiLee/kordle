@@ -1,5 +1,13 @@
+/**
+ * const
+ */
 const HANGUL_START_CHARCODE_TOKEN = '가'.charCodeAt(0);
 const HANGUL_END_CHARCODE_TOKEN = '힣'.charCodeAt(0);
+
+/**
+ * type
+ */
+type HANGUL_FUNCTTION = (param: string) => boolean;
 
 /**
  * @description 입력한 "단어"가 한글인지 확인
