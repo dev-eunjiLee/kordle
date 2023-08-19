@@ -17,8 +17,8 @@ export class KwordleController {
       'keyword',
       new ValidationPipeForInsertedKeyword({ standardLength: 5 }),
     )
-    keyword: string,
-  ) {
+    keyword: string[],
+  ): Array<Array<string>> {
     return this.kwordleService.answer(keyword);
   }
 }
