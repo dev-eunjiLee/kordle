@@ -19,6 +19,7 @@ export class ValidationPipeForInsertedKeyword<T> implements PipeTransform<T> {
       throw Error(`keyword length must be a ${this.KEYWORD_LENGTH}`);
     }
 
+    // 한글 체크
     if (!HANGUL.isHangul(String(value))) {
       throw Error(`characters in keyword must be a HANGUL`);
     }
