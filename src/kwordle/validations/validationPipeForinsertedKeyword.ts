@@ -14,17 +14,32 @@ export class ValidationPipeForInsertedKeyword<T> implements PipeTransform<T> {
       throw Error('keyword must be a string, not number');
     }
 
-    // 길이 체크
-    if (this.checkLength(String(value))) {
-      throw Error(`keyword length must be a ${this.KEYWORD_LENGTH}`);
-    }
-
     // 한글 체크
     if (!HANGUL.isHangul(String(value))) {
       throw Error(`characters in keyword must be a HANGUL`);
     }
 
-    return value;
+    // 기본 길이 체크
+    if (this.checkLength(String(value))) {
+      throw Error(`keyword length must be a ${this.KEYWORD_LENGTH}`);
+    }
+
+    const list = String(value)
+      .split('')
+      .map((per) => {
+        return HANGUL.divideHangul(per);
+      })
+      .flat()
+      .filter((per) => {
+        return per;
+      });
+
+    // 분리 후 길이 체크
+    if (list.length !== this.KEYWORD_LENGTH) {
+      throw Error(`keyword length must be a ${this.KEYWORD_LENGTH}`);
+    }
+
+    return list;
   }
 
   private checkNotNumberString(value: string): boolean {
@@ -33,6 +48,6 @@ export class ValidationPipeForInsertedKeyword<T> implements PipeTransform<T> {
 
   private checkLength(value: string): boolean {
     // TODO 자모음 구분해서 5자인지 확인
-    return String(value).length !== this.KEYWORD_LENGTH;
+    return String(value).length > this.KEYWORD_LENGTH;
   }
 }
