@@ -8,4 +8,4 @@
 | type  | name             | 설명           |
 | ----- | ---------------- | -------------- |
 | query | submitAnswer     | 쿼들 답안 제출 |
-| query | getCorrectAnswer | 쿼들 정답 받기 |
+| query | getCorrectAnswer | 쿼들 정답 확인 |
