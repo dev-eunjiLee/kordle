@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
+import { SubmitAnswerInputDto } from './dtos/submitAnswer.dto';
 
 @Injectable()
 export class KwordleService {
-  submitAnswer() {
-    return 'hi';
+  submitAnswer(input: SubmitAnswerInputDto) {
+    return input.answer;
   }
 
   getCorrectAnswer() {
