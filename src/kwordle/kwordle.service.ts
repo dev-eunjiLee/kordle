@@ -1,29 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { DisassembleStringByHangul } from 'src/common/disassembleStringByHangul';
 import { SubmitAnswerInputDto } from './dtos/submitAnswer.dto';
+import { PreKwordleService } from './pre.kwordle.service';
 
 @Injectable()
-export class KwordleService {
-  /**
-   * 정답 필드
-   * private 필드이기 때문에 해당 속성 값을 읽고 수정하는 getter, setter로 접근
-   */
-  private _answer: string;
-
-  get answer(): string {
-    return this._answer;
-  }
-
-  set answer(input: string) {
-    this._answer = input;
-  }
-
+export class KwordleService extends PreKwordleService {
   submitAnswer(input: SubmitAnswerInputDto) {
     const { answer } = input;
 
     const disassembledString = DisassembleStringByHangul(answer);
 
     // 길이체크
+    if (disassembledString.length !== this.validLength)
+      throw Error(
+        `입력한 글자는 자모음을 구분한 후 ${this.validLength}여야 합니다.`,
+      );
 
     // 순수 한글 여부 체크
 
