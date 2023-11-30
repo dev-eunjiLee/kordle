@@ -1,15 +1,20 @@
 import { Args, Query, Resolver } from '@nestjs/graphql';
 import { INPUT } from 'src/util/const';
-import { SubmitAnswerInputDto } from './dtos/submitAnswer.dto';
+import {
+  SubmitAnswerInputDto,
+  SubmitAnswerOutputDto,
+} from './dtos/submitAnswer.dto';
 import { KwordleService } from './kwordle.service';
 
 @Resolver(() => KwordleResolver)
 export class KwordleResolver {
   constructor(private readonly kwordleService: KwordleService) {}
-  @Query(() => String, {
+  @Query(() => SubmitAnswerOutputDto, {
     description: '쿼들 답안 제출',
   })
-  submitAnswer(@Args(INPUT) input: SubmitAnswerInputDto) {
+  submitAnswer(
+    @Args(INPUT) input: SubmitAnswerInputDto,
+  ): SubmitAnswerOutputDto {
     return this.kwordleService.submitAnswer(input);
   }
 
