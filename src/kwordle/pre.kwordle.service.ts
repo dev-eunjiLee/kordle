@@ -1,10 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { FIRST_KEYWORD } from 'src/util/consts/module-token.const';
 import { DisassembleStringByHangul } from 'src/util/functions/disassembleStringByHangul';
 
 @Injectable()
 export class PreKwordleService {
   constructor(
-    @Inject('FIRST_KEYWORD')
+    @Inject(FIRST_KEYWORD)
     private readonly firstKeyword: string,
   ) {
     this.rightAnswer = firstKeyword;

@@ -1,0 +1,1 @@
+export const FIRST_KEYWORD = 'FIRST_KEYWORD';
