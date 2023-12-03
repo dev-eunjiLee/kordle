@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { DisassembleStringByHangul } from 'src/common/disassembleStringByHangul';
 
 @Injectable()
 export class PreKwordleService {
@@ -23,6 +24,21 @@ export class PreKwordleService {
 
   set answer(input: string) {
     this._answer = input;
+    this.disassembledAnswer = DisassembleStringByHangul(input);
+  }
+
+  /**
+   * 정답을 분해한 필드
+   */
+
+  private _disassembledAnswer: Array<string>;
+
+  get disassembledAnswer(): Array<string> {
+    return this._disassembledAnswer;
+  }
+
+  set disassembledAnswer(input: Array<string>) {
+    this._disassembledAnswer = input;
   }
 
   /**
