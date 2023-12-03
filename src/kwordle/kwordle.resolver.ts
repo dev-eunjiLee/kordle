@@ -1,5 +1,5 @@
 import { Args, Query, Resolver } from '@nestjs/graphql';
-import { INPUT } from 'src/util/consts/const';
+import { INPUT } from 'src/util/consts/graphql-input.const';
 import {
   SubmitAnswerInputDto,
   SubmitAnswerOutputDto,
