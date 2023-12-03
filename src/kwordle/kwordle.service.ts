@@ -29,7 +29,9 @@ export class KwordleService extends PreKwordleService {
     if (this.answer !== input.answer) {
       output = {
         correctFlag: false,
-        correctList: ['X', 'X', 'X', 'X', 'X'],
+        correctList: this.disassembledAnswer.map((char, index) => {
+          return disassembledString[index] === char ? 'O' : 'X';
+        }),
       };
     } else {
       output = {
