@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { DisassembleStringByHangul } from 'src/common/disassembleStringByHangul';
+import { DisassembleStringByHangul } from 'src/util/functions/disassembleStringByHangul';
 import {
   SubmitAnswerInputDto,
   SubmitAnswerOutputDto,
@@ -14,9 +14,9 @@ export class KwordleService extends PreKwordleService {
     const inputAnswerList = DisassembleStringByHangul(answer);
 
     // 길이체크
-    if (inputAnswerList.length !== this.validLength)
+    if (inputAnswerList.length !== this.rightAnswerLength)
       throw Error(
-        `입력한 글자는 자모음을 구분한 후 ${this.validLength}여야 합니다.`,
+        `입력한 글자는 자음과 모음을 구분한 후 ${this.rightAnswerLength}자리여야 합니다.`,
       );
 
     // 순수 한글 여부 체크
@@ -34,7 +34,7 @@ export class KwordleService extends PreKwordleService {
     } else {
       output = {
         correctFlag: true,
-        correctList: ['O', 'O', 'O', 'O', 'O'],
+        correctList: Array.from({ length: this.rightAnswerLength }, () => 'O'),
       };
     }
 
