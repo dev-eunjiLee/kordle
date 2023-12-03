@@ -1,11 +1,15 @@
-import { Injectable } from '@nestjs/common';
-import { DisassembleStringByHangul } from 'src/common/disassembleStringByHangul';
+import { Inject, Injectable } from '@nestjs/common';
+import { DisassembleStringByHangul } from 'src/util/functions/disassembleStringByHangul';
 
 @Injectable()
 export class PreKwordleService {
-  constructor() {
-    this.rightAnswer = '이름';
-    this.validLength = 5;
+  constructor(
+    @Inject('FIRST_KEYWORD')
+    private readonly firstKeyword: string,
+  ) {
+    this.rightAnswer = firstKeyword;
+    this.rightAnswerList = DisassembleStringByHangul(firstKeyword);
+    this.rightAnswerLength = this.rightAnswerList.length;
   }
 
   /**
@@ -44,13 +48,13 @@ export class PreKwordleService {
   /**
    * 길이 필드
    */
-  private _validLength: number;
+  private _rightAnswerLength: number;
 
-  get validLength(): number {
-    return this._validLength;
+  get rightAnswerLength(): number {
+    return this._rightAnswerList.length;
   }
 
-  set validLength(input: number) {
-    this._validLength = input;
+  set rightAnswerLength(input: number) {
+    this._rightAnswerLength = input;
   }
 }

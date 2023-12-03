@@ -14,6 +14,13 @@ import { PreKwordleService } from './pre.kwordle.service';
      */
     KwordleService,
     PreKwordleService,
+    /**
+     * 상수
+     */
+    {
+      provide: 'FIRST_KEYWORD',
+      useValue: '도레미',
+    },
   ],
 })
 export class KwordleModule {}
