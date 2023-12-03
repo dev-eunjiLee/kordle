@@ -11,10 +11,10 @@ export class KwordleService extends PreKwordleService {
   submitAnswer(input: SubmitAnswerInputDto): SubmitAnswerOutputDto {
     const { answer } = input;
 
-    const disassembledString = DisassembleStringByHangul(answer);
+    const inputAnswerList = DisassembleStringByHangul(answer);
 
     // 길이체크
-    if (disassembledString.length !== this.validLength)
+    if (inputAnswerList.length !== this.validLength)
       throw Error(
         `입력한 글자는 자모음을 구분한 후 ${this.validLength}여야 합니다.`,
       );
@@ -26,12 +26,10 @@ export class KwordleService extends PreKwordleService {
 
     // 정답 여부 확인
     let output: SubmitAnswerOutputDto;
-    if (this.answer !== input.answer) {
+    if (this.rightAnswer !== input.answer) {
       output = {
         correctFlag: false,
-        correctList: this.disassembledAnswer.map((char, index) => {
-          return disassembledString[index] === char ? 'O' : 'X';
-        }),
+        correctList: this._compareAnswer(this.rightAnswerList, inputAnswerList),
       };
     } else {
       output = {
@@ -43,7 +41,16 @@ export class KwordleService extends PreKwordleService {
     return output;
   }
 
+  private _compareAnswer(
+    rightAnswerList: Array<string>,
+    inputAnswerList: Array<string>,
+  ) {
+    return rightAnswerList.map((char, index) => {
+      return inputAnswerList[index] === char ? 'O' : 'X';
+    });
+  }
+
   getCorrectAnswer() {
-    return this.answer;
+    return this.rightAnswer;
   }
 }

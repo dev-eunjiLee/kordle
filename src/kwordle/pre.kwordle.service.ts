@@ -4,7 +4,7 @@ import { DisassembleStringByHangul } from 'src/common/disassembleStringByHangul'
 @Injectable()
 export class PreKwordleService {
   constructor() {
-    this.answer = '이름';
+    this.rightAnswer = '이름';
     this.validLength = 5;
   }
 
@@ -16,29 +16,29 @@ export class PreKwordleService {
   /**
    * 정답 필드
    */
-  private _answer: string;
+  private _rightAnswer: string;
 
-  get answer(): string {
-    return this._answer;
+  get rightAnswer(): string {
+    return this._rightAnswer;
   }
 
-  set answer(input: string) {
-    this._answer = input;
-    this.disassembledAnswer = DisassembleStringByHangul(input);
+  set rightAnswer(input: string) {
+    this._rightAnswer = input;
+    this.rightAnswerList = DisassembleStringByHangul(input);
   }
 
   /**
    * 정답을 분해한 필드
    */
 
-  private _disassembledAnswer: Array<string>;
+  private _rightAnswerList: Array<string>;
 
-  get disassembledAnswer(): Array<string> {
-    return this._disassembledAnswer;
+  get rightAnswerList(): Array<string> {
+    return this._rightAnswerList;
   }
 
-  set disassembledAnswer(input: Array<string>) {
-    this._disassembledAnswer = input;
+  set rightAnswerList(input: Array<string>) {
+    this._rightAnswerList = input;
   }
 
   /**
