@@ -3,6 +3,10 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
+  /**
+   * TODO 만약, 외부 배포를 하게 된다면 표준국어대사전 저작권 정보 확인 필요(https://stdict.korean.go.kr/openapi/popup/copyrightPolicy.do)
+   */
+
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(
     new ValidationPipe({
