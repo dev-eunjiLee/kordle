@@ -6,6 +6,7 @@ import * as Joi from 'joi';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { KwordleModule } from './kwordle/kwordle.module';
+import { WebClientModule } from './util/web-client/web-client.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { KwordleModule } from './kwordle/kwordle.module';
         abortEarly: false, // false인 경우 validationSchema에 지정된 모든 키를 다 확인한 후 모아서 에러를 준다
       },
     }),
+    WebClientModule,
     /**
      * 실제 서비스 로직
      */
