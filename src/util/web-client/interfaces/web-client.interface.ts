@@ -2,9 +2,11 @@ import { HTTP_METHOD } from '../types/method.type';
 
 // 참고문서: https://tech.inflab.com/20230723-pure-http-client/
 export abstract class WebClient {
-  constructor(url: string, apiKey?: string) {
-    this.option.url = url;
-    this.option.apiKey = apiKey;
+  constructor(url: string) {
+    console.log(url);
+    this.option = {
+      url: url,
+    };
   }
 
   protected option: any;
@@ -19,6 +21,7 @@ export abstract class WebClient {
    */
   abstract header(param: Record<string, string>): this;
   abstract body(data: Record<string, unknown>): this;
+  abstract params(prams: Record<string, unknown>): this;
 
   /**
    * builder 패턴으로 만들어진 WebClient를 이용해 request를 날리기
