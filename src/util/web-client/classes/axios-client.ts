@@ -2,17 +2,14 @@ import axios from 'axios';
 import { WebClient } from '../interfaces/web-client.interface';
 import { HTTP_METHOD } from '../types/method.type';
 
-export class AxiosClient implements WebClient {
-  option: any;
-
-  constructor() {
-    this.option = {};
+export class AxiosClient extends WebClient {
+  url(url: string): this {
+    throw new Error('Method not implemented.');
   }
   method(method: HTTP_METHOD): this {
     this.option.method = method;
     return this;
   }
-
   header(param: Record<string, string>): this {
     throw new Error('Method not implemented.');
   }
@@ -38,7 +35,6 @@ export class AxiosClient implements WebClient {
   // builder 패턴으로 만들어진 Client를 이용해 최종적으로 Http Request를 날려 요청을 받는다
   async retrieve(): Promise<any> {
     const insertedOptionKeyList = Object.keys(this.option);
-
     throw new Error('Method not implemented.');
   }
 }
