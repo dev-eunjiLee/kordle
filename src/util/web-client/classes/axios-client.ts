@@ -1,11 +1,8 @@
+import axios from 'axios';
 import { WebClient } from '../interfaces/web-client.interface';
 import { HTTP_METHOD } from '../types/method.type';
-/**
- * [모듈 호출 방식 참고 방식 공부해서 정리한 링크(ESM)](https://just-dev-poi.tistory.com/54)
- */
-const got = import('got');
 
-export class GotClient implements WebClient {
+export class AxiosClient implements WebClient {
   option: any;
 
   constructor() {
@@ -41,7 +38,6 @@ export class GotClient implements WebClient {
   // builder 패턴으로 만들어진 Client를 이용해 최종적으로 Http Request를 날려 요청을 받는다
   async retrieve(): Promise<any> {
     const insertedOptionKeyList = Object.keys(this.option);
-    this._checkRequiredKey(insertedOptionKeyList);
 
     throw new Error('Method not implemented.');
   }
