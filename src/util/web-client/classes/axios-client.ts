@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { WebClient } from '../interfaces/web-client.interface';
+import { WebClient } from '../abstract.class/web-client.abstract.class';
 import { HTTP_METHOD } from '../types/method.type';
 
 export class AxiosClient extends WebClient {
