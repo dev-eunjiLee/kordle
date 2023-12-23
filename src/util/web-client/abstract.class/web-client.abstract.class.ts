@@ -1,3 +1,4 @@
+import { WebResponse } from '../classes/web-response.class';
 import { HTTP_METHOD } from '../types/method.type';
 
 /**
@@ -40,5 +41,5 @@ export abstract class WebClient {
    * @description builder 패턴으로 셋팅된 옵션대로 request를 날리는 함수
    * @detail retrieve: 검색하다
    */
-  abstract retrieve(): Promise<any>;
+  abstract retrieve(): Promise<WebResponse>;
 }

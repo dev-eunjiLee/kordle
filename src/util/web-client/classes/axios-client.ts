@@ -1,6 +1,7 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { WebClient } from '../abstract.class/web-client.abstract.class';
 import { HTTP_METHOD } from '../types/method.type';
+import { WebResponse } from './web-response.class';
 
 export class AxiosClient extends WebClient {
   protected option: AxiosRequestConfig;
@@ -20,10 +21,12 @@ export class AxiosClient extends WebClient {
     return this;
   }
 
-  async retrieve(): Promise<AxiosResponse> {
+  async retrieve(): Promise<WebResponse> {
     const result = await axios({
       ...this.option,
     });
-    return result;
+    const { status: statusCode, data: body, ...extraInfo } = result;
+    const res = new WebResponse(statusCode, body, extraInfo);
+    return res;
   }
 }
