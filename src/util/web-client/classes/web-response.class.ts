@@ -7,7 +7,7 @@
 export class WebResponse {
   constructor(
     private readonly _statusCode: number,
-    private readonly _body: string,
+    private readonly _body: unknown,
     private readonly _extraInfo: unknown,
   ) {}
 
