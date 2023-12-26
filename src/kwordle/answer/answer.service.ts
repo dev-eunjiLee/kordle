@@ -1,61 +1,76 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { FIRST_KEYWORD } from 'src/util/consts/module-token.const';
-import { DisassembleStringByHangul } from 'src/util/functions/disassembleStringByHangul';
+import { Injectable, OnModuleInit } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { WebClientService } from 'src/util/web-client/web-client.service';
 
 @Injectable()
-export class AnswerService {
+export class AnswerService implements OnModuleInit {
+  private _answer: string;
+
   constructor(
-    @Inject(FIRST_KEYWORD)
-    private readonly firstKeyword: string,
-  ) {
-    this.rightAnswer = firstKeyword;
-    this.rightAnswerList = DisassembleStringByHangul(firstKeyword);
-    this.rightAnswerLength = this.rightAnswerList.length;
+    private readonly configService: ConfigService,
+    private readonly webClientService: WebClientService,
+  ) {}
+
+  onModuleInit() {
+    this._setAnswer();
   }
 
-  /**
-   * _answer, _validLength
-   * private 필드이기 때문에 해당 속성 값을 읽고 수정하는 getter, setter로 접근
-   */
+  private async _setAnswer() {
+    const key = this.configService.get('DICTIONARY_API_KEY');
+    const url = 'https://stdict.korean.go.kr/api/search.do';
+    const method = 'get';
+    const params: Record<string, unknown> = {
+      key,
+      type_search: 'search',
+      req_type: 'json',
+    };
 
-  /**
-   * 정답 필드
-   */
-  private _rightAnswer: string;
+    let flag = true;
 
-  get rightAnswer(): string {
-    return this._rightAnswer;
-  }
+    let tempAnswer: string = this._answer;
+    const willSearchedKeywordList = ['계이름', '달력', '이름'];
+    let searchIndex = 0;
 
-  set rightAnswer(input: string) {
-    this._rightAnswer = input;
-    this.rightAnswerList = DisassembleStringByHangul(input);
-  }
+    while (flag) {
+      params.q = tempAnswer || '세븐틴';
 
-  /**
-   * 정답을 분해한 필드
-   */
+      const result = await this.webClientService
+        .create(url)
+        .method(method)
+        .params(params)
+        .retrieve();
 
-  private _rightAnswerList: Array<string>;
+      if (result.statusCode !== 200 || result.rawBody === '') {
+        tempAnswer = willSearchedKeywordList[searchIndex];
+      } else {
+        const rawBody = result.rawBody as {
+          channel: {
+            item: Array<{
+              word: string; // 표제어
+              pos: string; // 품사
+              definition: string; // 뜻풀이
+            }>;
+          };
+        };
 
-  get rightAnswerList(): Array<string> {
-    return this._rightAnswerList;
-  }
+        for (const per of rawBody.channel.item) {
+          if (per.pos === '명사' && per.word.length <= 3) {
+            this._answer = per.word;
+            flag = false;
+            break;
+          }
+        }
 
-  set rightAnswerList(input: Array<string>) {
-    this._rightAnswerList = input;
-  }
+        if (!this._answer) {
+          rawBody.channel.item[0].definition.split(' ').forEach((per) => {
+            willSearchedKeywordList.push(per);
+          });
+        }
 
-  /**
-   * 길이 필드
-   */
-  private _rightAnswerLength: number;
+        searchIndex++;
+      }
+    }
 
-  get rightAnswerLength(): number {
-    return this._rightAnswerList.length;
-  }
-
-  set rightAnswerLength(input: number) {
-    this._rightAnswerLength = input;
+    console.log(this._answer);
   }
 }
