@@ -30,15 +30,14 @@ import { PreKwordleService } from './pre.kwordle.service';
         const apiKey = configService.get('DICTIONARY_API_KEY');
         // https://stdict.korean.go.kr/api/search.do?certkey_no=6214&key=4AE17465F1242FA5FDCA1FC89340C153&type_search=search&req_type=json&q=%EB%82%98%EB%AC%B4
 
-        await webClientService
+        const result = await webClientService
           .create('https://stdict.korean.go.kr/api/search.do')
           .method('get')
           .params({
-            certKey_no: configService.get('DICTIONARY_API_KEY'),
-            key: '4AE17465F1242FA5FDCA1FC89340C153',
+            key: configService.get('DICTIONARY_API_KEY'),
             type_search: 'search',
             req_type: 'json',
-            q: '%EB%82%98%EB%AC%B4',
+            q: '호랑이',
           })
           .retrieve();
 
