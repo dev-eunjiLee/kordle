@@ -15,11 +15,15 @@ export class KwordleResolver {
   submitAnswer(
     @Args(INPUT) input: SubmitAnswerInputDto,
   ): SubmitAnswerOutputDto {
-    return this.kwordleService.submitAnswer(input);
+    // return this.kwordleService.submitAnswer(input);
+    return {
+      correctFlag: true,
+      correctList: ['0'],
+    };
   }
 
   @Query(() => String, { nullable: true, description: '쿼들 정답 확인' })
   getCorrectAnswer() {
-    return this.kwordleService.getCorrectAnswer();
+    // return this.kwordleService.getCorrectAnswer();
   }
 }
