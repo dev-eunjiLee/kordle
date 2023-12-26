@@ -3,7 +3,7 @@ import { FIRST_KEYWORD } from 'src/util/consts/module-token.const';
 import { DisassembleStringByHangul } from 'src/util/functions/disassembleStringByHangul';
 
 @Injectable()
-export class PreKwordleService {
+export class AnswerService {
   constructor(
     @Inject(FIRST_KEYWORD)
     private readonly firstKeyword: string,

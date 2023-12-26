@@ -4,7 +4,6 @@ import { FIRST_KEYWORD } from 'src/util/consts/module-token.const';
 import { WebClientService } from 'src/util/web-client/web-client.service';
 import { KwordleResolver } from './kwordle.resolver';
 import { KwordleService } from './kwordle.service';
-import { PreKwordleService } from './pre.kwordle.service';
 
 @Module({
   providers: [
@@ -16,7 +15,6 @@ import { PreKwordleService } from './pre.kwordle.service';
      * Services
      */
     KwordleService,
-    PreKwordleService,
     /**
      * 상수
      */
