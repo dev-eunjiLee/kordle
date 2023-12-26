@@ -8,7 +8,7 @@ export abstract class WebClientService {
 
 @Injectable()
 export class AxiosClientService implements WebClientService {
-  create(url: string): WebClient {
+  create(url: string): AxiosClient {
     return new AxiosClient(url);
   }
 }
