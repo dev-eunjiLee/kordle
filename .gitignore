@@ -38,3 +38,6 @@ launch.json
 settings.json
 
 .env.dev
+
+# static 파일
+static/
