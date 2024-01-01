@@ -52,7 +52,11 @@ export class AnswerService implements OnModuleInit {
       .params(params)
       .retrieve();
 
-    let answer: Answer;
+    /**
+     * Non-null assertion operator: !
+     * 변수가 null이 아니라고 컴파일러에게 전달하여 Null 제약조건을 완화
+     */
+    let answer!: Answer;
 
     const {
       channel: { item: itemList },
@@ -90,6 +94,10 @@ export class AnswerService implements OnModuleInit {
       }
     }
 
-    return new Answer('나무', '나무');
+    if (answer === undefined) {
+      throw new Error('정답 객체가 셋팅되지 않음');
+    } else {
+      return answer;
+    }
   }
 }
