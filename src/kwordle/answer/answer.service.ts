@@ -43,33 +43,47 @@ export class AnswerService implements OnModuleInit {
       key,
       type_search: 'search',
       req_type: 'json',
-      q: this.answer?.word || '나무',
+      q: this.answer?.word || '컴퓨터',
     };
 
+    /**
+     * Non-null assertion operator: !
+     * 변수가 null이 아니라고 컴파일러에게 전달하여 Null 제약조건을 완화
+     */
+
+    // 실제 정답인 단어와 의미가 들어갈 변수
+    let answer!: Answer;
+
+    // * 첫번째 단어 검색하기
     const result = await this.webClientService
       .create(url)
       .method(method)
       .params(params)
       .retrieve();
 
-    /**
-     * Non-null assertion operator: !
-     * 변수가 null이 아니라고 컴파일러에게 전달하여 Null 제약조건을 완화
-     */
-    let answer!: Answer;
+    if (result.rawBody === '') {
+      throw new Error('첫번째 키워드가 잘못되었습니다.');
+    }
 
     const {
       channel: { item: itemList },
     } = result.rawBody as DICT_TYPE;
 
+    // * 첫번째 단어 검색 후 나온 결과들에서 definition 분해해서, 분해된 definition 토큰들을 다시 검색한 후 해당 토큰이 명사이면 해당 값을 정답으로 설정함
     for await (const item of itemList) {
       console.log(`item: ${item.word}`);
+
+      // definition 분리 후 정리
       const definitionTokenList = item.sense.definition
         .split(' ')
-        .map((per) => per.trim());
+        .map((per) => per.trim().replace('.', ''));
+
+      // 분리된 definition 토큰을 다시 검색
       for await (const token of definitionTokenList) {
         console.log(`token: ${token}`);
         params.q = token;
+
+        // 토큰 검색
         const tokenSearchResult = await this.webClientService
           .create(url)
           .method(method)
