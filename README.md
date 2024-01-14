@@ -2,7 +2,7 @@
 
 ## Description
 
-한글 워들을 즐길 수 있는 "쿼들(kwordle)의 API 서버
+한글 워들의 API 서버
 
 ## Stack
 
