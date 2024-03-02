@@ -15,10 +15,13 @@ export class KwordleResolver {
   submitAnswer(
     @Args(INPUT) input: SubmitAnswerInputDto,
   ): SubmitAnswerOutputDto {
-    return {
+    const output: SubmitAnswerOutputDto = {
       correctFlag: true,
-      correctList: ['0'],
+      correctList: ['STRIKE', 'STRIKE', 'STRIKE', 'STRIKE', 'STRIKE', 'STRIKE'],
+      answer: '세계',
     };
+    console.log(output);
+    return output;
   }
 
   @Query(() => String, { nullable: true, description: '쿼들 정답 확인' })
