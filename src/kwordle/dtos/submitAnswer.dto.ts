@@ -21,6 +21,7 @@ export class SubmitAnswerInputDto {
   @ArrayMinSize(6)
   answer: string[];
 }
+export type CheckAnswerInputDto = SubmitAnswerInputDto;
 
 export enum ANSWER_FLAG_ENUM {
   'OUT' = 'OUT',
@@ -56,3 +57,5 @@ export class SubmitAnswerOutputDto {
   @Field(() => String, { nullable: true })
   answer?: string;
 }
+
+export type CheckAnswerOutputDto = SubmitAnswerOutputDto;
