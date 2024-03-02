@@ -1,10 +1,10 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import hangul from 'hangul-js';
+import * as hangul from 'hangul-js';
+import { Answer } from './answer.entity';
 
 @Injectable()
 export class AnswerService implements OnModuleInit {
-  protected ANSWER: string;
-  protected SPLITTED_ANSWER: string[];
+  protected ANSWER: Answer;
 
   /**
    * 앱 초기화할 때, 정답 셋팅
@@ -13,19 +13,15 @@ export class AnswerService implements OnModuleInit {
     this.setAnswer();
   }
 
-  setAnswer(): boolean {
+  setAnswer(): void {
     const answer = this._getAnswer();
-    const splittedAnswer = DisassembleStringByHangul(answer);
 
     this.ANSWER = answer;
-    this.SPLITTED_ANSWER = splittedAnswer;
-
-    return true;
   }
 
   private _checkAnswer(splittedAnswer: string[]): void {
     /**
-     * ANCHOR 정답으로 셋팅할 키워드를 체크할 때 점검해야하는 부분들 추가 필요
+     * TODO 정답으로 셋팅할 키워드를 체크할 때 점검해야하는 부분들 추가 필요
      */
     if (splittedAnswer.length !== 6)
       throw Error('키워드를 다시 확인해주세요 (사유: 정답의 길이)');
@@ -35,7 +31,7 @@ export class AnswerService implements OnModuleInit {
     });
   }
 
-  private _getAnswer(): string {
+  private _getAnswer(): Answer {
     /**
      * TODO 우선 기능 구현을 위해 임의로 정답 목록을 만들어두었으나, 추후에 외부의 국어사전 API를 활용해서 답을 셋팅할 예정
      */
@@ -54,10 +50,11 @@ export class AnswerService implements OnModuleInit {
     let index = day;
     let flag = true;
     let answer!: string;
+    let splittedAnswer!: Array<string>;
     while (flag)
       try {
         answer = answerList[index];
-        const splittedAnswer = hangul.disassemble(answer);
+        splittedAnswer = hangul.disassemble(answer);
         this._checkAnswer(splittedAnswer);
         flag = false;
       } catch (e) {
@@ -67,6 +64,11 @@ export class AnswerService implements OnModuleInit {
           index = 0;
         }
       }
-    return answer;
+
+    if (!answer || !splittedAnswer) {
+      throw Error('정답이 제대로 설정되지 않았습니다.');
+    }
+
+    return { keyword: answer, splittedKeyword: splittedAnswer };
   }
 }
