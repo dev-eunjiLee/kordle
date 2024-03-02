@@ -17,9 +17,4 @@ export class KwordleResolver {
   ): SubmitAnswerOutputDto {
     return this.kwordleService.checkAnswer(input);
   }
-
-  @Query(() => String, { nullable: true, description: '쿼들 정답 확인' })
-  getCorrectAnswer() {
-    // return this.kwordleService.getCorrectAnswer();
-  }
 }
