@@ -4,21 +4,32 @@ import {
   ObjectType,
   registerEnumType,
 } from '@nestjs/graphql';
-import { IsString } from 'class-validator';
+import {
+  ArrayMaxSize,
+  ArrayMinSize,
+  IsArray,
+  IsString,
+  Length,
+} from 'class-validator';
 
 @InputType()
 export class SubmitAnswerInputDto {
-  @Field(() => String, { description: '유저가 입력한 답안' })
-  @IsString()
-  answer: string;
+  @Field(() => [String], { description: '유저가 입력한 답안' })
+  @IsArray()
+  @IsString({ each: true })
+  @ArrayMaxSize(6)
+  @ArrayMinSize(6)
+  answer: string[];
 }
 
-export enum ANSWER_FLAG {
-  'OUT',
-  'STRIKE',
-  'BALL',
+export enum ANSWER_FLAG_ENUM {
+  'OUT' = 'OUT',
+  'STRIKE' = 'STRIKE',
+  'BALL' = 'BALL',
 }
-registerEnumType(ANSWER_FLAG, {
+export type ANSWER_FLAG_TYPE = keyof typeof ANSWER_FLAG_ENUM;
+
+registerEnumType(ANSWER_FLAG_ENUM, {
   name: 'ANSWER_FLAG',
   description: `각 글자의 정답 정도를 알려주기 위해 사용하는 ENUM, 숫자 야구 게임에서 착안. 
   예시) 정답:  "ㅅㅓㅣㄱ ㅕㅣ"(세계) 
@@ -39,6 +50,9 @@ export class SubmitAnswerOutputDto {
   @Field(() => Boolean, { description: '정답 여부' })
   correctFlag: boolean;
 
-  @Field(() => [ANSWER_FLAG], { description: '글자 위치별 일치 여부' })
-  correctList: ANSWER_FLAG[];
+  @Field(() => [ANSWER_FLAG_ENUM], { description: '글자 위치별 일치 여부' })
+  correctList: ANSWER_FLAG_TYPE[];
+
+  @Field(() => String, { nullable: true })
+  answer?: string;
 }
