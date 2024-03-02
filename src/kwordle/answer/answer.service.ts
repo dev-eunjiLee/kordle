@@ -1,5 +1,5 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { DisassembleStringByHangul } from 'src/util/functions/disassembleStringByHangul';
+import hangul from 'hangul-js';
 
 @Injectable()
 export class AnswerService implements OnModuleInit {
