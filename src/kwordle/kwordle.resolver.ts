@@ -15,7 +15,6 @@ export class KwordleResolver {
   submitAnswer(
     @Args(INPUT) input: SubmitAnswerInputDto,
   ): SubmitAnswerOutputDto {
-    // return this.kwordleService.submitAnswer(input);
     return {
       correctFlag: true,
       correctList: ['0'],
