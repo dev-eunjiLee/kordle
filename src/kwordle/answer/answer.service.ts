@@ -1,6 +1,11 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import * as hangul from 'hangul-js';
 import { Answer } from './answer.entity';
+import {
+  ANSWER_FLAG_TYPE,
+  CheckAnswerInputDto,
+  CheckAnswerOutputDto,
+} from '../dtos/submitAnswer.dto';
 
 @Injectable()
 export class AnswerService implements OnModuleInit {
@@ -15,8 +20,48 @@ export class AnswerService implements OnModuleInit {
 
   setAnswer(): void {
     const answer = this._getAnswer();
-
     this.ANSWER = answer;
+  }
+
+  checkAnswer(input: CheckAnswerInputDto): CheckAnswerOutputDto {
+    console.log(input);
+
+    const correctList: Array<ANSWER_FLAG_TYPE> = [];
+
+    let outFlag = true;
+
+    /**
+     * TODO 아래 로직을 쓰면 답이 고구마일 때, ["ㅅ","ㅓ","ㅣ","ㄱ","ㅕ","ㅣ"]가 ['BALL', 'OUT', 'BALL', 'OUT', 'OUT', 'OUT']로 나와서 수정이 필요함
+     */
+
+    for (const index in this.ANSWER.splittedKeyword) {
+      let status!: ANSWER_FLAG_TYPE;
+      const correctChar = this.ANSWER.splittedKeyword[index];
+      if (input.answer[index] === correctChar) {
+        status = 'STRIKE';
+      } else {
+        for (const answerIndex in input.answer) {
+          if (answerIndex !== index) {
+            if (correctChar === input.answer[answerIndex]) {
+              status = 'BALL';
+              break;
+            }
+          }
+        }
+      }
+      if (status === undefined) {
+        status = 'OUT';
+      }
+
+      correctList.push(status);
+    }
+
+    const output: CheckAnswerOutputDto = {
+      correctFlag: true,
+      correctList: ['STRIKE', 'STRIKE', 'STRIKE', 'STRIKE', 'STRIKE', 'STRIKE'],
+      answer: '고구마',
+    };
+    return output;
   }
 
   private _checkAnswer(splittedAnswer: string[]): void {
