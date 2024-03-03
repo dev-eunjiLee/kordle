@@ -4,26 +4,17 @@ import {
   SubmitAnswerInputDto,
   SubmitAnswerOutputDto,
 } from './dtos/submitAnswer.dto';
-import { KwordleService } from './kwordle.service';
+import { AnswerService } from './answer/answer.service';
 
 @Resolver(() => KwordleResolver)
 export class KwordleResolver {
-  constructor(private readonly kwordleService: KwordleService) {}
+  constructor(private readonly answerService: AnswerService) {}
   @Query(() => SubmitAnswerOutputDto, {
     description: '쿼들 답안 제출',
   })
   submitAnswer(
     @Args(INPUT) input: SubmitAnswerInputDto,
   ): SubmitAnswerOutputDto {
-    // return this.kwordleService.submitAnswer(input);
-    return {
-      correctFlag: true,
-      correctList: ['0'],
-    };
-  }
-
-  @Query(() => String, { nullable: true, description: '쿼들 정답 확인' })
-  getCorrectAnswer() {
-    // return this.kwordleService.getCorrectAnswer();
+    return this.answerService.checkAnswer(input);
   }
 }

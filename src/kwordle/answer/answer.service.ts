@@ -1,117 +1,119 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { WebClientService } from 'src/util/web-client/web-client.service';
-
-type DICT_TYPE = {
-  channel: {
-    item: Array<{
-      word: string; // 단어
-      pos: string; // 명사
-      sense: {
-        definition: string; // 단어의 의미
-      };
-    }>;
-  };
-};
-
-export class Answer {
-  constructor(word: string, definition: string) {
-    this.word = word;
-    this.definition = definition;
-  }
-  word: string;
-  definition: string;
-}
+import * as hangul from 'hangul-js';
+import { Answer } from './answer.entity';
+import {
+  ANSWER_FLAG_TYPE,
+  CheckAnswerInputDto,
+  CheckAnswerOutputDto,
+} from '../dtos/submitAnswer.dto';
 
 @Injectable()
 export class AnswerService implements OnModuleInit {
-  constructor(
-    private readonly configService: ConfigService,
-    private readonly webClientService: WebClientService,
-  ) {}
+  protected ANSWER: Answer;
 
-  private answer: Answer;
-  async onModuleInit() {
-    this.answer = await this._getAnswer();
+  /**
+   * 앱 초기화할 때, 정답 셋팅
+   */
+  onModuleInit() {
+    this.setAnswer();
   }
 
-  private async _getAnswer(): Promise<Answer> {
-    const key = this.configService.get('DICTIONARY_API_KEY');
-    const url = 'https://stdict.korean.go.kr/api/search.do';
-    const method = 'get';
-    const params: Record<string, unknown> = {
-      key,
-      type_search: 'search',
-      req_type: 'json',
-      q: this.answer?.word || '컴퓨터',
-    };
+  setAnswer(): void {
+    const answer = this._getAnswer();
+    this.ANSWER = answer;
+  }
+
+  checkAnswer(input: CheckAnswerInputDto): CheckAnswerOutputDto {
+    console.log(input);
+
+    const correctList: Array<ANSWER_FLAG_TYPE> = [];
+
+    let outFlag = true;
 
     /**
-     * Non-null assertion operator: !
-     * 변수가 null이 아니라고 컴파일러에게 전달하여 Null 제약조건을 완화
+     * TODO 아래 로직을 쓰면 답이 고구마일 때, ["ㅅ","ㅓ","ㅣ","ㄱ","ㅕ","ㅣ"]가 ['BALL', 'OUT', 'BALL', 'OUT', 'OUT', 'OUT']로 나와서 수정이 필요함
      */
 
-    // 실제 정답인 단어와 의미가 들어갈 변수
-    let answer!: Answer;
-
-    // * 첫번째 단어 검색하기
-    const result = await this.webClientService
-      .create(url)
-      .method(method)
-      .params(params)
-      .retrieve();
-
-    if (result.rawBody === '') {
-      throw new Error('첫번째 키워드가 잘못되었습니다.');
-    }
-
-    const {
-      channel: { item: itemList },
-    } = result.rawBody as DICT_TYPE;
-
-    // * 첫번째 단어 검색 후 나온 결과들에서 definition 분해해서, 분해된 definition 토큰들을 다시 검색한 후 해당 토큰이 명사이면 해당 값을 정답으로 설정함
-    for await (const item of itemList) {
-      console.log(`item: ${item.word}`);
-
-      // definition 분리 후 정리
-      const definitionTokenList = item.sense.definition
-        .split(' ')
-        .map((per) => per.trim().replace('.', ''));
-
-      // 분리된 definition 토큰을 다시 검색
-      for await (const token of definitionTokenList) {
-        console.log(`token: ${token}`);
-        params.q = token;
-
-        // 토큰 검색
-        const tokenSearchResult = await this.webClientService
-          .create(url)
-          .method(method)
-          .params(params)
-          .retrieve();
-
-        if (tokenSearchResult.rawBody === '') {
-          continue;
-        }
-
-        const {
-          channel: { item: itemListByToken },
-        } = tokenSearchResult.rawBody as DICT_TYPE;
-
-        for await (const tokenItem of itemListByToken) {
-          console.log(`tokenItem: ${tokenItem.word}`);
-
-          if (tokenItem.pos === '명사') {
-            answer = new Answer(tokenItem.word, tokenItem.sense.definition);
+    for (const index in this.ANSWER.splittedKeyword) {
+      let status!: ANSWER_FLAG_TYPE;
+      const correctChar = this.ANSWER.splittedKeyword[index];
+      if (input.answer[index] === correctChar) {
+        status = 'STRIKE';
+      } else {
+        for (const answerIndex in input.answer) {
+          if (answerIndex !== index) {
+            if (correctChar === input.answer[answerIndex]) {
+              status = 'BALL';
+              break;
+            }
           }
         }
       }
+      if (status === undefined) {
+        status = 'OUT';
+      }
+
+      correctList.push(status);
     }
 
-    if (answer === undefined) {
-      throw new Error('정답 객체가 셋팅되지 않음');
-    } else {
-      return answer;
+    const output: CheckAnswerOutputDto = {
+      correctFlag: true,
+      correctList: ['STRIKE', 'STRIKE', 'STRIKE', 'STRIKE', 'STRIKE', 'STRIKE'],
+      answer: '고구마',
+    };
+    return output;
+  }
+
+  private _checkAnswer(splittedAnswer: string[]): void {
+    /**
+     * TODO 정답으로 셋팅할 키워드를 체크할 때 점검해야하는 부분들 추가 필요
+     */
+    if (splittedAnswer.length !== 6)
+      throw Error('키워드를 다시 확인해주세요 (사유: 정답의 길이)');
+    splittedAnswer.forEach((char: string) => {
+      if (!isNaN(Number(char)))
+        throw Error('키워드를 다시 확인해주세요 (사유: 숫자 포함)');
+    });
+  }
+
+  private _getAnswer(): Answer {
+    /**
+     * TODO 우선 기능 구현을 위해 임의로 정답 목록을 만들어두었으나, 추후에 외부의 국어사전 API를 활용해서 답을 셋팅할 예정
+     */
+    const answerList = [
+      '세계',
+      '고구마',
+      '피아노',
+      '빵틀',
+      '달력',
+      '한글',
+      '짠지',
+    ];
+
+    const day = new Date().getDay();
+
+    let index = day;
+    let flag = true;
+    let answer!: string;
+    let splittedAnswer!: Array<string>;
+    while (flag)
+      try {
+        answer = answerList[index];
+        splittedAnswer = hangul.disassemble(answer);
+        this._checkAnswer(splittedAnswer);
+        flag = false;
+      } catch (e) {
+        console.error(e);
+        index++;
+        if (index >= answerList.length) {
+          index = 0;
+        }
+      }
+
+    if (!answer || !splittedAnswer) {
+      throw Error('정답이 제대로 설정되지 않았습니다.');
     }
+
+    return { keyword: answer, splittedKeyword: splittedAnswer };
   }
 }
