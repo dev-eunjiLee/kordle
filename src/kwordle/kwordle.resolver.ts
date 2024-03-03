@@ -4,17 +4,17 @@ import {
   SubmitAnswerInputDto,
   SubmitAnswerOutputDto,
 } from './dtos/submitAnswer.dto';
-import { KwordleService } from './kwordle.service';
+import { AnswerService } from './answer/answer.service';
 
 @Resolver(() => KwordleResolver)
 export class KwordleResolver {
-  constructor(private readonly kwordleService: KwordleService) {}
+  constructor(private readonly answerService: AnswerService) {}
   @Query(() => SubmitAnswerOutputDto, {
     description: '쿼들 답안 제출',
   })
   submitAnswer(
     @Args(INPUT) input: SubmitAnswerInputDto,
   ): SubmitAnswerOutputDto {
-    return this.kwordleService.checkAnswer(input);
+    return this.answerService.checkAnswer(input);
   }
 }
